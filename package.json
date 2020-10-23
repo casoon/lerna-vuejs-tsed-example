@@ -1,0 +1,67 @@
+{
+  "name": "lerna-vuejs-tsed-example",
+  "private": true,
+  "license": "ISC",
+  "scripts": {
+    "postinstall": "lerna bootstrap",
+    "bootstrap": "lerna bootstrap",
+    "bootstrap:production": "lerna bootstrap -- --production",
+    "test": "lerna run test --stream",
+    "test:e2e": "lerna run test:e2e",
+    "test:client": "lerna run test --scope=@project/client",
+    "test:server": "lerna run test --scope=@project/server",
+    "lint": "lerna run lint",
+    "lint:fix": "lerna run lint:fix",
+    "build": "lerna run build --stream",
+    "build:client": "lerna run build --scope=@project/client --stream",
+    "build:server": "lerna run build --scope=@project/server --stream",
+    "start": "lerna run start --stream --parallel",
+    "start:client": "lerna run start --scope=@project/client --stream",
+    "start:server": "lerna run start --scope=@project/server --stream",
+    "start:prod": "cross-env NODE_ENV=production pm2-docker --raw processes.config.js --no-deamon",
+    "docker:build": "yarn build && docker-compose build"
+  },
+  "devDependencies": {
+    "babel-eslint": "^10.1.0",
+    "babel-preset-env": "^1.7.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "cross-env": "7.0.2",
+    "eslint": "^7.11.0",
+    "eslint-plugin-react": "^7.21.5",
+    "husky": "4.3.0",
+    "jest": "^26.6.1",
+    "lerna": "^3.22.1",
+    "lint-staged": "10.4.2",
+    "prettier": "^2.1.2",
+    "pm2": "4.5.0"
+  },
+  "dependencies": {
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "**/@types",
+      "**/@types/**",
+      "**/@tsed",
+      "**/@tsed/**"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-commit": "git update-index --again"
+    }
+  },
+  "lint-staged": {
+    "packages/client/**/*.{js,vue}": [
+      "cd packages/client && yarn lint:fix",
+      "git add"
+    ],
+    "packages/server/**/*.{ts}": [
+      "cd packages/server && yarn lint:fix",
+      "git add"
+    ]
+  }
+}
